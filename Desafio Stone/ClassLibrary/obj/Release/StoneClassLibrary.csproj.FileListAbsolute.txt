@@ -1,0 +1,4 @@
+C:\Users\Caio\Documents\Visual Studio 2015\Projects\Desafio Stone\ClassLibrary\bin\Release\ClassLibrary.dll
+C:\Users\Caio\Documents\Visual Studio 2015\Projects\Desafio Stone\ClassLibrary\bin\Release\ClassLibrary.pdb
+C:\Users\Caio\Documents\Visual Studio 2015\Projects\Desafio Stone\ClassLibrary\obj\Release\ClassLibrary.dll
+C:\Users\Caio\Documents\Visual Studio 2015\Projects\Desafio Stone\ClassLibrary\obj\Release\ClassLibrary.pdb
