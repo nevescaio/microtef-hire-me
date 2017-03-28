@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StoneClassLibrary
 {
@@ -41,7 +42,8 @@ namespace StoneClassLibrary
                 return new Return
                 {
                     returnCode = "LEGAL006",
-                    message = "Campos obrigatórios não informados!"
+                    message = "Campos obrigatórios não informados!",
+                    success = false
                 };
             }
 
@@ -51,7 +53,8 @@ namespace StoneClassLibrary
                 return new Return
                 {
                     returnCode = "LEGAL003",
-                    message = "Valor inválido!"
+                    message = "Valor inválido!",
+                    success = false
                 };
             }
 
@@ -61,7 +64,8 @@ namespace StoneClassLibrary
                 return new Return
                 {
                     returnCode = "LEGAL005",
-                    message = "Erro no tamanho da senha!"
+                    message = "Erro no tamanho da senha!",
+                    success = false
                 };
             }
 
@@ -71,7 +75,8 @@ namespace StoneClassLibrary
                 return new Return
                 {
                     returnCode = "LEGAL007",
-                    message = "Erro no tamanho do número do cartão!"
+                    message = "Erro no tamanho do número do cartão!",
+                    success = false
                 };
             }
 
@@ -100,6 +105,7 @@ namespace StoneClassLibrary
                     break;
             }
 
+            returnObj.success = true;
             return returnObj;
         }
     }

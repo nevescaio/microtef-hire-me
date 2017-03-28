@@ -19,6 +19,7 @@ using StoneClassLibrary;
 using static StoneClassLibrary.StoneMethods;
 using System.Web.Script.Serialization;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Cliente
 {
@@ -27,6 +28,7 @@ namespace Cliente
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
@@ -45,7 +47,7 @@ namespace Cliente
                 //criar objeto de transacao com os dados informados na tela
                 Transaction transaction = new Transaction
                 {
-                    amount = String.IsNullOrEmpty(amount.Text) ? -1 : Decimal.Parse(amount.Text),
+                    amount = string.IsNullOrEmpty(amount.Text) ? -1 : Decimal.Parse(amount.Text),
                     type = type.Text,
                     card = new Card
                     {
@@ -57,11 +59,17 @@ namespace Cliente
                         type = cardType.Text,
                         hasPassword = (bool)hasPassword.IsChecked
                     },
-                    number = number.SelectedIndex
+                    number = number.SelectedIndex + 1
+                };
+
+                //criar objeto de requisicao
+                Request request = new Request {
+                    url = "/transaction",
+                    dataObject = transaction
                 };
 
                 //transformar objeto em json
-                var json = new JavaScriptSerializer().Serialize(transaction);
+                var json = new JavaScriptSerializer().Serialize(request);
 
                 //transmitir json ao servidor
                 byte[] sentBytes = Encoding.UTF8.GetBytes(json);
@@ -82,7 +90,7 @@ namespace Cliente
 
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Erro: " + ex.Message);
             }
 
             finally
@@ -159,6 +167,53 @@ namespace Cliente
             //permitir apenas numeros, '/'
             Regex regex = new Regex("[^0-9/]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void TransactionsListTab_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TcpClient client = new TcpClient();
+
+            try
+            {
+                //conectar ao servidor no IP local, porta 8001
+                client.Connect(GetLocalIPAddress().ToString(), 8001);
+                Stream stream = client.GetStream();
+
+                //criar objeto de requisicao
+                Request request = new Request
+                {
+                    url = "/transactionsList"
+                };
+
+                //transformar objeto em json
+                var json = new JavaScriptSerializer().Serialize(request);
+
+                //transmitir json ao servidor
+                byte[] sentBytes = Encoding.UTF8.GetBytes(json);
+                stream.Write(sentBytes, 0, sentBytes.Length);
+
+                //receber retorno do servidor
+                byte[] receivedBytes = new byte[1000];
+                int k = stream.Read(receivedBytes, 0, 1000);
+                Array.Resize(ref receivedBytes, k);
+
+                //transformar json em objeto
+                json = Encoding.UTF8.GetString(receivedBytes);
+                List<TransactionResult> transactions = new JavaScriptSerializer().Deserialize<List<TransactionResult>>(json);
+
+                //preencher datagrid
+                dataGrid.ItemsSource = transactions;
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro: " + ex.Message);
+            }
+
+            finally
+            {
+                client.Close();
+            }
         }
     }
 }

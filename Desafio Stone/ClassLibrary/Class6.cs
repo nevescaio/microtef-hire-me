@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace StoneClassLibrary
 {
-    public class Return
+    public class Request
     {
-        public string returnCode;
-        public string message;
-        public bool success;
+        public string url;
+        public Transaction dataObject;
     }
 }
